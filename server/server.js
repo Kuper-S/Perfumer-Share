@@ -26,12 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set up the user routes
 app.use('/api/users', userRoutes);
 
-// Connect to the MongoDB database
-// const db = mongoose.connection;
-// db.on('error', console.error.bind(console, 'connection error:'));
-// db.once('open', function() {
-//   console.log('Connected to MongoDB');
-// });
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB database');
