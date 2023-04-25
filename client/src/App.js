@@ -1,12 +1,23 @@
 
 import './App.css';
 import React from 'react';
-import LoginPage from './pages/Login-Register/LoginPage';
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom";
+import LoginPage from './pages/Login-SingIn/LoginPage';
+import SingupPage from './pages/Login-SingIn/SingupPage';
+
 function App() {
   return (
-    <div className="App">
-      <LoginPage />
-    </div>
+    <BrowserRouter>
+      <Routes>
+      {/* <Route path="/" element={<Home />} /> */}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/singup" element={<SingupPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
