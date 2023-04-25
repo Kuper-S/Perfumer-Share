@@ -1,5 +1,5 @@
 const User = require('../db/models/UserModel');
-
+const bcrypt = require('bcryptjs');
 // Create a new user in the database
 async function createUser(email, password, firstName, lastName, gender) {
     // Check if user already exists in the database
@@ -13,7 +13,7 @@ async function createUser(email, password, firstName, lastName, gender) {
     const hashedPassword = await bcrypt.hash(password, salt);
     user = new User({ email, password: hashedPassword, firstName, lastName, gender });
     await user.save();
-  
+    console.log(`New user registered: ${firstName} ${lastName} ,email: (${email})`);
     return user;
   }
   

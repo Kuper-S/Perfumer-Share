@@ -1,13 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const path = require('path');
+const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { createUser,
     getUser,
     updateUser,
     deleteUser } = require('../controllers/UserController');
 const { authenticate } = require('../middlewares/auth');
-
+const dotenv = require('dotenv');
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
+const jwt_secret = process.env.JWT_SECRET;
 // Error handling middleware
 const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
@@ -16,33 +21,37 @@ const errorHandler = (err, req, res, next) => {
 
 // User Registration Route
 router.post(
-  '/register',
-  // Add validation middleware to validate user input
-  body('email').isEmail().normalizeEmail(),
-  body('password').isLength({ min: 6 }),
-  body('firstName').trim().notEmpty(),
-  body('lastName').trim().notEmpty(),
-
-  async (req, res, next) => {
-    // Validate user input and return errors if any
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+    '/register',
+    // Add validation middleware to validate user input
+    body('email').isEmail().normalizeEmail(),
+    body('password').isLength({ min: 6 }),
+    body('firstName').trim().notEmpty(),
+    body('lastName').trim().notEmpty(),
+  
+    async (req, res, next) => {
+      // Validate user input and return errors if any
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
+  
+      const { email, password, firstName, lastName, gender } = req.body;
+  
+      try {
+        // Create a new user in the database
+        const user = await createUser(email, password, firstName, lastName, gender);
+        
+        // Create a JWT token for the user
+        const token = jwt.sign({ user: { id: user.id } }, jwt_secret, { expiresIn: '1h' });
+  
+        // Return a success message and token to the client
+        res.json({ msg: 'User registered successfully', token });
+      } catch (err) {
+        next(err);
+      }
     }
-
-    const { email, password, firstName, lastName, gender } = req.body;
-
-    try {
-      // Create a new user in the database
-      const user = await createUser(email, password, firstName, lastName, gender);
-
-      // Return a success message to the client
-      res.json({ msg: 'User registered successfully' });
-    } catch (err) {
-      next(err);
-    }
-  }
-);
+  );
+  
 
 
 router.get('/profile', authenticate, async (req, res, next) => {
@@ -76,7 +85,7 @@ router.put('/profile', authenticate,
   
       // Retrieve the updated user's profile from the database
       const user = await getUser(req.user.id);
-  
+      console.log(`User Updated : ${user}`);
       res.json(user);
     } catch (err) {
       next(err);
@@ -88,8 +97,9 @@ router.delete('/profile', authenticate, async (req, res, next) => {
     try {
       // Delete the user's profile from the database
       await deleteUser(req.user.id);
-  
+        
       res.json({ msg: 'User deleted successfully' });
+      console.log(`User Deleted : ${user}`);
     } catch (err) {
       next(err);
     }

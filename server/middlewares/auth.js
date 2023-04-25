@@ -1,5 +1,11 @@
 const jwt = require('jsonwebtoken');
 const User = require('../db/models/UserModel');
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
+const jwt_secret = process.env.JWT_SECRET;
 
 // Verify a JWT token and attach the user object to the request object
 async function authenticate(req, res, next) {
@@ -12,7 +18,7 @@ async function authenticate(req, res, next) {
 
   try {
     // Verify the token and extract the user ID
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, jwt_secret);
     const userId = decoded.user.id;
 
     // Find the user in the database and attach it to the request object
