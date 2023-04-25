@@ -1,21 +1,22 @@
 const User = require('../db/models/UserModel');
 
 // Create a new user in the database
-async function createUser(email, password) {
-  // Check if user already exists in the database
-  let user = await User.findOne({ email });
-  if (user) {
-    throw new Error('User already exists');
+async function createUser(email, password, firstName, lastName, gender) {
+    // Check if user already exists in the database
+    let user = await User.findOne({ email });
+    if (user) {
+      throw new Error('User already exists');
+    }
+  
+    // Hash the password and create a new user in the database
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user = new User({ email, password: hashedPassword, firstName, lastName, gender });
+    await user.save();
+  
+    return user;
   }
-
-  // Hash the password and create a new user in the database
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
-  user = new User({ email, password: hashedPassword });
-  await user.save();
-
-  return user;
-}
+  
 
 // Retrieve an existing user from the database
 async function getUser(id) {

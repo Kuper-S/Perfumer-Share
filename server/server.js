@@ -1,15 +1,15 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
 const path = require('path');
-
 const dotenv = require('dotenv');
 dotenv.config({
   path: path.resolve(__dirname, '../.env')
 });
-const userRoutes = require('./routes/user');
 
+// Import the user routes
+const userRoutes = require('./routes/user');
+const postRoutes = require('./routes/post');
 const app = express();
 const mongoose = require('mongoose');
 const URI = process.env.MONGODB_URI;
@@ -25,7 +25,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Set up the user routes
 app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
 
+// Connect to the MongoDB database
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB database');
