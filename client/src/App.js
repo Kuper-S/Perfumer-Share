@@ -7,17 +7,19 @@ import {
   Route
 } from "react-router-dom";
 import LoginPage from './pages/Login-SingIn/LoginPage';
-import SingupPage from './pages/Login-SingIn/SingupPage';
+import SignupPage from './pages/Login-SingIn/SignupPage';
+import HomePage from './pages/Home/HomePage';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-      {/* <Route path="/" element={<Home />} /> */}
+    <Routes>
+      <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/singup" element={<SingupPage />} />
-      </Routes>
-    </BrowserRouter>
+      <Route path="/signup" element={<SignupPage />} />
+      {/* <Route path="*" element={<NotFoundPage />} /> */}
+    </Routes>
+  </BrowserRouter>
   );
 }
 
