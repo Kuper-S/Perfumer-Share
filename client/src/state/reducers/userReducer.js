@@ -4,6 +4,7 @@ const initialState = {
   user: null,
   loading: false,
   error: null,
+  gender: null
 };
 
 const userSlice = createSlice({
@@ -12,6 +13,9 @@ const userSlice = createSlice({
   reducers: {
     getUserStart(state) {
       state.loading = true;
+    },
+    setGender(state, action) {
+        state.gender = action.payload;
     },
     getUserSuccess(state, action) {
       state.user = action.payload;
