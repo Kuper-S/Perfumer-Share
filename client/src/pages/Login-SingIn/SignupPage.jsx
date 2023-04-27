@@ -2,11 +2,10 @@ import React , {useState} from 'react';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
-import { MDBIcon, MDBPopover, MDBPopoverBody } from 'mdbreact';
+import { MDBIcon} from 'mdbreact';
 import {
   MDBContainer,
   MDBInput,
-  MDBCheckbox,
   MDBBtn,
   MDBRow,
   MDBCol,
