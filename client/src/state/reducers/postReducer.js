@@ -1,75 +1,140 @@
-// Import the action types
-import { CREATE_POST, GET_POSTS, UPDATE_POST, DELETE_POST, LIKE_POST, UNLIKE_POST, ADD_COMMENT, DELETE_COMMENT } from '../actions/actionTypes';
+import { createSlice } from '@reduxjs/toolkit';
 
-// Define the initial state
 const initialState = {
   posts: [],
-  loading: true,
+  loading: false,
   error: null
-}
+};
 
-// Define the reducer function
-const postReducer = (state = initialState, action) => {
-  switch(action.type) {
-    case GET_POSTS:
-      return {
-        ...state,
-        posts: action.payload,
-        loading: false,
-        error: null
-      }
-    case CREATE_POST:
-      return {
-        ...state,
-        posts: [...state.posts, action.payload],
-        loading: false,
-        error: null
-      }
-    case UPDATE_POST:
-      return {
-        ...state,
-        posts: state.posts.map(post => post._id === action.payload._id ? action.payload : post),
-        loading: false,
-        error: null
-      }
-    case DELETE_POST:
-      return {
-        ...state,
-        posts: state.posts.filter(post => post._id !== action.payload),
-        loading: false,
-        error: null
-      }
-    case LIKE_POST:
-      return {
-        ...state,
-        posts: state.posts.map(post => post._id === action.payload._id ? action.payload : post),
-        loading: false,
-        error: null
-      }
-    case UNLIKE_POST:
-      return {
-        ...state,
-        posts: state.posts.map(post => post._id === action.payload._id ? action.payload : post),
-        loading: false,
-        error: null
-      }
-    case ADD_COMMENT:
-      return {
-        ...state,
-        posts: state.posts.map(post => post._id === action.payload._id ? action.payload : post),
-        loading: false,
-        error: null
-      }
-    case DELETE_COMMENT:
-      return {
-        ...state,
-        posts: state.posts.map(post => post._id === action.payload._id ? action.payload : post),
-        loading: false,
-        error: null
-      }
-    default:
-      return state;
-  }
-}
+const postSlice = createSlice({
+  name: 'post',
+  initialState,
+  reducers: {
+    getPostsStart(state) {
+      state.loading = true;
+    },
+    getPostsSuccess(state, action) {
+      state.posts = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    getPostsFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    createPostStart(state) {
+      state.loading = true;
+    },
+    createPostSuccess(state, action) {
+      state.posts = [...state.posts, action.payload];
+      state.loading = false;
+      state.error = null;
+    },
+    createPostFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updatePostStart(state) {
+      state.loading = true;
+    },
+    updatePostSuccess(state, action) {
+      state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+      state.loading = false;
+      state.error = null;
+    },
+    updatePostFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deletePostStart(state) {
+      state.loading = true;
+    },
+    deletePostSuccess(state, action) {
+      state.posts = state.posts.filter(post => post._id !== action.payload);
+      state.loading = false;
+      state.error = null;
+    },
+    deletePostFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    likePostStart(state) {
+      state.loading = true;
+    },
+    likePostSuccess(state, action) {
+      state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+      state.loading = false;
+      state.error = null;
+    },
+    likePostFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    unlikePostStart(state) {
+      state.loading = true;
+    },
+    unlikePostSuccess(state, action) {
+      state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+      state.loading = false;
+      state.error = null;
+    },
+    unlikePostFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    addCommentStart(state) {
+      state.loading = true;
+    },
+    addCommentSuccess(state, action) {
+      state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+      state.loading = false;
+      state.error = null;
+    },
+    addCommentFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteCommentStart(state) {
+      state.loading = true;
+    },
+    deleteCommentSuccess(state, action) {
+      state.posts = state.posts.map(post => post._id === action.payload._id ? action.payload : post);
+      state.loading = false;
+      state.error = null;
+    },
+    deleteCommentFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
 
-export default postReducer;
+export const {
+  getPostsStart,
+  getPostsSuccess,
+  getPostsFailure,
+  createPostStart,
+  createPostSuccess,
+  createPostFailure,
+  updatePostStart,
+  updatePostSuccess,
+  updatePostFailure,
+    deletePostStart,
+    deletePostSuccess,
+    deletePostFailure,
+    likePostStart,
+    likePostSuccess,
+    likePostFailure,
+    unlikePostStart,
+    unlikePostSuccess,
+    unlikePostFailure,
+    addCommentStart,
+    addCommentSuccess,
+    addCommentFailure,
+    deleteCommentStart,
+    deleteCommentSuccess,
+    deleteCommentFailure,
+} = postSlice.actions;
+
+export default postSlice.reducer;
+ 
