@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const { authenticate } = require('../middlewares/auth');
-const { getAllPosts, createPost, getPost, updatePost, deletePost } = require('../controllers/PostController');
+const { getAllPosts, createPost, getPost, updatePost, deletePost ,likePost,
+  deleteComment,
+  addComment,} = require('../controllers/PostController');
 
 // Get all posts
 router.get('/', getAllPosts);
@@ -29,5 +31,17 @@ router.put('/:id', authenticate,
 
 // Delete a specific post by ID
 router.delete('/:id', authenticate, deletePost);
+
+// Like a specific post by ID
+router.post('/:id/like', authenticate, likePost);
+
+// Add a comment to a post
+router.post('/:id/comments', authenticate,
+  body('text').trim().notEmpty(),
+  addComment
+);
+
+// Delete a comment from a post
+router.delete('/:id/comments/:commentId', authenticate, deleteComment);
 
 module.exports = router;

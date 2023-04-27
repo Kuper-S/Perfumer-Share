@@ -1,5 +1,6 @@
 const Post = require('../db/models/PostModel');
 const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
 
 // Get all posts
 async function getAllPosts(req, res) {
@@ -110,6 +111,88 @@ async function deletePost(req, res) {
   }
 }
 
+const likePost = async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+
+    // Check if post has already been liked by this user
+    if (post.likes.some(like => like.user.toString() === req.user.id)) {
+      return res.status(400).json({ msg: 'Post already liked' });
+    }
+
+    post.likes.unshift({ user: req.user.id });
+
+    await post.save();
+
+    res.json(post.likes);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// Add a comment to a post
+const addComment = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  try {
+    const { id } = req.params;
+    const { text, userId } = req.body;
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+
+    const newComment = {
+      text,
+      user: userId,
+    };
+
+    post.comments.unshift(newComment);
+    await post.save();
+
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+// Delete a comment from a post
+const deleteComment = async (req, res) => {
+  try {
+    const { id, commentId } = req.params;
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ msg: 'Post not found' });
+    }
+
+    const comment = post.comments.find((comment) => comment.id === commentId);
+
+    if (!comment) {
+      return res.status(404).json({ msg: 'Comment not found' });
+    }
+
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    post.comments = post.comments.filter((comment) => comment.id !== commentId);
+    await post.save();
+
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+};
+
+
 module.exports = {
   getAllPosts,
   getPost,
@@ -117,4 +200,8 @@ module.exports = {
   createPost,
   updatePost,
   deletePost,
+  likePost,
+  deleteComment,
+  addComment,
+
 };
