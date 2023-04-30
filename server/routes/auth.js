@@ -5,7 +5,11 @@ const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const { getUserByEmail } = require('../controllers/UserController');
 const { authenticate } = require('../middlewares/auth');
-
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({
+  path: path.resolve(__dirname, '../../.env')
+});
 const jwt_secret = process.env.JWT_SECRET;
 
 router.post('/login', 

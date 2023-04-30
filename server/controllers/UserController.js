@@ -40,9 +40,19 @@ async function deleteUser(id) {
   await User.findByIdAndDelete(id);
 }
 
+async function getUserByEmail(email) {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error('User not found');
+  }
+  return user;
+}
+
+
 module.exports = {
   createUser,
   getUser,
   updateUser,
   deleteUser,
+  getUserByEmail
 };

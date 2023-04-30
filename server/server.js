@@ -10,6 +10,7 @@ dotenv.config({
 // Import the user routes
 const userRoutes = require('./routes/user');
 const postRoutes = require('./routes/post');
+const authRoutes = require('./routes/auth');
 const app = express();
 const mongoose = require('mongoose');
 const URI = process.env.MONGODB_URI;
@@ -26,6 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Set up the user routes
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
 // Connect to the MongoDB database
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
