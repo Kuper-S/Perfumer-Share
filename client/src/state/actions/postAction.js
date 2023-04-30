@@ -23,136 +23,94 @@ import { getPostsStart,
       deleteCommentStart,
       deleteCommentSuccess,
       deleteCommentFailure, } from '../reducers/postReducer';
-import { generateToken } from '../../utils/auth';
-
+import { api } from '../../services/api';
 // Get Posts Action
-export const getPostsAction = (userId) => async (dispatch) => {
-    try {
-      dispatch(getPostsStart());
-      const token = generateToken(userId);
-      const res = await axios.get('/api/posts', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(getPostsSuccess(res.data));
-    } catch (err) {
-      dispatch(getPostsFailure(err.response.data));
-    }
-  };
 
-
+export const getPostsAction = () => async (dispatch) => {
+  try {
+    dispatch(getPostsStart());
+    const response = await api.post.getPosts();
+    dispatch(getPostsSuccess(response.data));
+  } catch (error) {
+    dispatch(getPostsFailure(error.message));
+  }
+};
 
 // Create Post Action
 export const createPostAction = (postData) => async (dispatch) => {
   try {
     dispatch(createPostStart());
-    const token = generateToken(postData.userId);
-    const res = await axios.post('/api/posts', postData, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    dispatch(createPostSuccess(res.data));
-  } catch (err) {
-    dispatch(createPostFailure(err.response.data));
+    const response = await api.post.createPost(postData);
+    dispatch(createPostSuccess(response.data));
+  } catch (error) {
+    dispatch(createPostFailure(error.message));
   }
 };
-// Update Post Action 
+
+// Update Post Action
 export const updatePostAction = (postData) => async (dispatch) => {
-    try {
-      dispatch(updatePostStart());
-      const token = generateToken(postData.userId);
-      const res = await axios.put(`/api/posts/${postData._id}`, postData, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(updatePostSuccess(res.data));
-    } catch (err) {
-      dispatch(updatePostFailure(err.response.data));
-    }
-  };
+  try {
+    dispatch(updatePostStart());
+    const response = await api.post.updatePost(postData);
+    dispatch(updatePostSuccess(response.data));
+  } catch (error) {
+    dispatch(updatePostFailure(error.message));
+  }
+};
   
 
 
 // Delete Post Action
-export const deletePostAction = (postId, userId) => async (dispatch) => {
+export const deletePostAction = (postId) => async (dispatch) => {
   try {
     dispatch(deletePostStart());
-    const token = generateToken(userId);
-    const res = await axios.delete(`/api/posts/${postId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    dispatch(deletePostSuccess(res.data));
-  } catch (err) {
-    dispatch(deletePostFailure(err.response.data));
+    const response = await api.post.deletePost(postId);
+    dispatch(deletePostSuccess(response.data));
+  } catch (error) {
+    dispatch(deletePostFailure(error.message));
   }
 };
 
 // Like Post Action
-export const likePostAction = (postId, userId) => async (dispatch) => {
-    try {
-      dispatch(likePostStart());
-      const token = generateToken(userId);
-      const res = await axios.put(`/api/posts/${postId}/like`, null, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(likePostSuccess(res.data));
-    } catch (err) {
-      dispatch(likePostFailure(err.response.data));
-    }
-  };
-  
-  // Unlike Post Action
-  export const unlikePostAction = (postId, userId) => async (dispatch) => {
-    try {
-      dispatch(unlikePostStart());
-      const token = generateToken(userId);
-      const res = await axios.put(`/api/posts/${postId}/unlike`, null, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(unlikePostSuccess(res.data));
-    } catch (err) {
-      dispatch(unlikePostFailure(err.response.data));
-    }
-  };
-  
-  // Add Comment Action
-  export const addCommentAction = (postId, commentData, userId) => async (dispatch) => {
-    try {
-      dispatch(addCommentStart());
-      const token = generateToken(userId);
-      const res = await axios.post(`/api/posts/${postId}/comment`, commentData, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(addCommentSuccess(res.data));
-    } catch (err) {
-      dispatch(addCommentFailure(err.response.data));
-    }
-  };
-  
-  // Delete Comment Action
-  export const deleteCommentAction = (postId, commentId, userId) => async (dispatch) => {
-    try {
-      dispatch(deleteCommentStart());
-      const token = generateToken(userId);
-      const res = await axios.delete(`/api/posts/${postId}/comment/${commentId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      dispatch(deleteCommentSuccess(res.data));
-    } catch (err) {
-      dispatch(deleteCommentFailure(err.response.data));
-    }
-  };
-  
+export const likePostAction = (postId) => async (dispatch) => {
+  try {
+    dispatch(likePostStart());
+    const response = await api.post.likePost(postId);
+    dispatch(likePostSuccess(response.data));
+  } catch (error) {
+    dispatch(likePostFailure(error.message));
+  }
+};
+
+// Unlike Post Action
+export const unlikePostAction = (postId) => async (dispatch) => {
+  try {
+    dispatch(unlikePostStart());
+    const response = await api.post.unlikePost(postId);
+    dispatch(unlikePostSuccess(response.data));
+  } catch (error) {
+    dispatch(unlikePostFailure(error.message));
+  }
+};
+
+// Add Comment Action
+export const addCommentAction = (postId, commentData) => async (dispatch) => {
+  try {
+    dispatch(addCommentStart());
+    const response = await api.post.addComment(postId, commentData);
+    dispatch(addCommentSuccess(response.data));
+  } catch (error) {
+    dispatch(addCommentFailure(error.message));
+  }
+};
+
+// Delete Comment Action
+export const deleteCommentAction = (postId, commentId) => async (dispatch) => {
+  try {
+    dispatch(deleteCommentStart());
+    const response = await api.post.deleteComment(postId, commentId);
+    dispatch(deleteCommentSuccess(response.data));
+  } catch (error) {
+    dispatch(deleteCommentFailure(error.message));
+  }
+};
