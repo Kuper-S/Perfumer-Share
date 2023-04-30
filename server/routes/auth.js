@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const {register} = require('../controllers/AuthController');
 const { body, validationResult } = require('express-validator');
 const { getUserByEmail } = require('../controllers/UserController');
 const { authenticate } = require('../middlewares/auth');
@@ -54,5 +55,8 @@ router.post('/logout', authenticate, async (req, res, next) => {
     next(err);
   }
 });
+
+router.post('/register', register);
+
 
 module.exports = router;

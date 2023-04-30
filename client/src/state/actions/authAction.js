@@ -27,3 +27,16 @@ export const logoutUser = () => async (dispatch) => {
     console.error(error);
   }
 };
+
+export const registerUser = (formData) => async (dispatch) => {
+  try {
+    dispatch(loginRequest());
+    const { data } = await axios.post('/api/auth/register', formData);
+    dispatch(loginSuccess(data));
+  } catch (error) {
+    const message = error.response && error.response.data.message
+      ? error.response.data.message
+      : error.message;
+    dispatch(loginFailure(message));
+  }
+};

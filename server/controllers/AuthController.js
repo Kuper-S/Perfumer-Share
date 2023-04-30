@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+const User = require('../db/models/UserModel');
 
 const secret = process.env.JWT_SECRET;
 
@@ -73,5 +73,8 @@ async function logout(req, res, next) {
     next(error);
   }
 }
+
+
+
 
 module.exports = { register, login, logout };
