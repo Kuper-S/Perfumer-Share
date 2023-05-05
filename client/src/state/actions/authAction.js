@@ -1,14 +1,17 @@
-import { createAction } from '@reduxjs/toolkit';
 import { api } from '../../services/api';
-
-export const loginRequest = createAction('auth/loginRequest');
-export const loginSuccess = createAction('auth/loginSuccess');
-export const loginFailure = createAction('auth/loginFailure');
-export const logout = createAction('auth/logout');
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logoutStart,
+  logoutSuccess,
+  logoutFailure,
+  updateGender
+} from '../reducers/authReducer';
 
 export const login = (email, password) => async (dispatch) => {
   try {
-    dispatch(loginRequest());
+    dispatch(loginStart());
     const { data } = await api.auth.login(email, password);
     dispatch(loginSuccess(data));
   } catch (error) {
@@ -21,19 +24,20 @@ export const login = (email, password) => async (dispatch) => {
 
 export const logoutUser = () => async (dispatch) => {
   try {
+    dispatch(logoutStart());
     await api.auth.logout();
-    dispatch(logout());
+    dispatch(logoutSuccess());
   } catch (error) {
-    console.error(error);
+    dispatch(logoutFailure(error.message));
   }
 };
 
 export const registerUser = (formData) => async (dispatch) => {
   try {
-    dispatch(loginRequest());
+    dispatch(loginStart());
     const { data } = await api.auth.register(formData);
     dispatch(loginSuccess(data));
-    console.log(formData.email, formData.password , formData.gender);
+    console.log(formData.email, formData.password, formData.gender);
   } catch (error) {
     const message = error.response && error.response.data.message
       ? error.response.data.message
@@ -41,8 +45,6 @@ export const registerUser = (formData) => async (dispatch) => {
     dispatch(loginFailure(message));
   }
 };
-
-export const updateGender = createAction('auth/updateGender');
 
 export const setGender = (gender) => async (dispatch) => {
   try {

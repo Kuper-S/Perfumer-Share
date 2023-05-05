@@ -13,9 +13,11 @@ import {
   MDBCol,
   MDBCard,
   MDBCardBody,
-  
 }
 from 'mdb-react-ui-kit';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const genderOptions = [
   { value: 'male', label: 'Male' },
@@ -32,13 +34,13 @@ function SingupPage() {
     email: '',
     password: '',
     gender: '',
-  });
-
-
-
+    }
+    
+  );
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,10 +50,29 @@ function SingupPage() {
     }
     try {
       await dispatch(registerUser(formData));
+      toast.success('Registration successful!', {
+        position: 'top-right',
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        gender: '',
+      });
+      window.location.href = '/'; // navigate to home page
     } catch (error) {
       console.error(error);
-      
+      setFormData({}); // clear form
+      toast.error('Registration failed. Please try again.');
     }
+    
   };
   
 
@@ -60,6 +81,7 @@ function SingupPage() {
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden'>
     <MDBRow>
+    <ToastContainer />
       <MDBCol md='6' className='text-center text-md-start d-flex flex-column justify-content-center'>
         <h1 className="my-5 display-3 fw-bold ls-tight px-3" style={{color: 'hsl(320, 81%, 75%)'}}>
           ScentShare <br />

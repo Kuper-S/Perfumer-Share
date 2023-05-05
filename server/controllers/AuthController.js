@@ -60,6 +60,8 @@ async function handleRegister(req, res, next) {
     const token = jwt.sign({ userId: newUser._id }, secret);
 
     // Return token to client
+    
+    console.log("New user created successfully");
     res.json({ token });
   } catch (error) {
     next(error);
