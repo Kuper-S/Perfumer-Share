@@ -9,9 +9,9 @@ import { getUserStart, getUserSuccess, getUserFailure ,
     logoutUserSuccess,
     logoutUserFailure,
     } from '../reducers/userReducer';
-import axios from 'axios';
+
 import { api } from '../../services/api';
-import {generateToken, verifyToken} from '../../utils/auth';
+
 
 // Get User Action
 export const getUserAction = () => async (dispatch) => {
@@ -66,16 +66,23 @@ export const createUserAction = (userData) => async (dispatch) => {
 
 
 // Login User Action
-export const loginUserAction = (credentials) => async (dispatch) => {
+export const registerUser = (formData) => async (dispatch) => {
   try {
     dispatch(loginUserStart());
-    const res = await api.auth.login(credentials.email, credentials.password);
-    localStorage.setItem('token', res.token);
-    dispatch(loginUserSuccess(res.user));
+    const { data } = await api.auth.register({
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      password: formData.password,
+      gender: formData.gender,
+    });
+    localStorage.setItem('token', data.token);
+    dispatch(loginUserSuccess(data.user));
   } catch (err) {
     dispatch(loginUserFailure(err.message));
   }
 };
+
 
 // Logout User Action
 export const logoutUserAction = () => async (dispatch) => {

@@ -1,12 +1,38 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../db/models/UserModel');
+const { body, validationResult } = require('express-validator');
 
 const secret = process.env.JWT_SECRET;
 
-async function register(req, res, next) {
+// Create an array of middleware functions to validate the request body for registering a user
+const registerValidation = [
+  // Validate the email field
+  body('email').isEmail().withMessage('Invalid email address'),
+
+  // Validate the password field
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+
+  // Validate the firstName field
+  body('firstName').isLength({ min: 2 }).withMessage('First name is required'),
+
+  // Validate the lastName field
+  body('lastName').isLength({ min: 2 }).withMessage('Last name is required'),
+
+  // Handle validation errors
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
+];
+
+// Handler for registering a new user
+async function handleRegister(req, res, next) {
   try {
-    const { email, password, firstName, lastName } = req.body;
+    const { email, password, firstName, lastName ,gender} = req.body;
 
     // Check if user with email already exists
     const existingUser = await User.findOne({ email });
@@ -23,7 +49,8 @@ async function register(req, res, next) {
       email,
       password: hashedPassword,
       firstName,
-      lastName
+      lastName,
+      gender
     });
 
     // Save user to database
@@ -39,7 +66,8 @@ async function register(req, res, next) {
   }
 }
 
-async function login(req, res, next) {
+// Handler for logging in a user
+async function handleLogin(req, res, next) {
   try {
     const { email, password } = req.body;
 
@@ -65,7 +93,8 @@ async function login(req, res, next) {
   }
 }
 
-async function logout(req, res, next) {
+// Handler for logging out a user
+async function handleLogout(req, res, next) {
   try {
     // No action needed, client will discard JWT token
     res.status(200).send();
@@ -74,7 +103,4 @@ async function logout(req, res, next) {
   }
 }
 
-
-
-
-module.exports = { register, login, logout };
+module.exports = { handleRegister, handleLogin, handleLogout, registerValidation };

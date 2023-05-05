@@ -33,10 +33,22 @@ export const registerUser = (formData) => async (dispatch) => {
     dispatch(loginRequest());
     const { data } = await api.auth.register(formData);
     dispatch(loginSuccess(data));
+    console.log(formData.email, formData.password , formData.gender);
   } catch (error) {
     const message = error.response && error.response.data.message
       ? error.response.data.message
       : error.message;
     dispatch(loginFailure(message));
+  }
+};
+
+export const updateGender = createAction('auth/updateGender');
+
+export const setGender = (gender) => async (dispatch) => {
+  try {
+    const { data } = await api.auth.updateGender(gender);
+    dispatch(updateGender(data.gender));
+  } catch (error) {
+    console.error(error);
   }
 };

@@ -34,3 +34,10 @@ export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE';
 export const COMMENT_POST_REQUEST = 'COMMENT_POST_REQUEST';
 export const COMMENT_POST_SUCCESS = 'COMMENT_POST_SUCCESS';
 export const COMMENT_POST_FAILURE = 'COMMENT_POST_FAILURE';
+
+
+// auth Constants
+export const LOGIN_REQUEST = 'auth/LOGIN_REQUEST';
+export const LOGIN_SUCCESS = 'auth/LOGIN_SUCCESS';
+export const LOGIN_FAILURE = 'auth/LOGIN_FAILURE';
+export const LOGOUT = 'auth/LOGOUT';

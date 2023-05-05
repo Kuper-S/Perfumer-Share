@@ -40,10 +40,20 @@ function SingupPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData));
+    if (!formData.gender) {
+      alert('Please select a gender');
+      return;
+    }
+    try {
+      await dispatch(registerUser(formData));
+    } catch (error) {
+      console.error(error);
+      
+    }
   };
+  
 
 
 

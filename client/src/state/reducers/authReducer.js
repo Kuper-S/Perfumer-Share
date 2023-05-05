@@ -4,6 +4,7 @@ const initialState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  gender: null
 };
 
 const authSlice = createSlice({
@@ -34,6 +35,9 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateGender(state, action) {
+      state.gender = action.payload;
+    }
   },
 });
 
@@ -44,6 +48,7 @@ export const {
   logoutStart,
   logoutSuccess,
   logoutFailure,
+  updateGender
 } = authSlice.actions;
 
 export default authSlice.reducer;
