@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 function Navbar() {
-  const firstName = useSelector(state => state.auth.user.firstName);
+  
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -22,7 +22,7 @@ function Navbar() {
         </ul>
         <ul className="navbar-nav ml-auto">
           <li className="nav-item">
-            <span className="navbar-text">Welcome, {firstName}</span>
+            <span className="navbar-text">Welcome, KUPER</span>
           </li>
           <li className="nav-item">
             <Link className="nav-link" to="/logout">Logout</Link>
