@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "build": "nodemon server.js"
   },
   "author": "Super-Kuper",
   "license": "ISC",
@@ -19,7 +20,8 @@
     "helmet": "^6.1.5",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.4",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.22"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
