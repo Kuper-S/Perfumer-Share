@@ -33,7 +33,7 @@ app.use('/api/auth', authRoutes);
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB database');
-    const PORT = 3000;
+    const PORT = 3030;
     app.listen(PORT, () => {
       console.log(`App is listening on port ${PORT}! , http://localhost:${PORT}`);
     });

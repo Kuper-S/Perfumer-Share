@@ -9,7 +9,7 @@ describe('Post API', () => {
   beforeAll(async () => {
     // Create a new user and get an auth token for them
     const userResponse = await request(server)
-      .post('http://localhost:3000/api/users/register')
+      .post('http://localhost:3030/api/users/register')
       .send({
         firstName: 'Tomi',
         lastName: 'Tim',
