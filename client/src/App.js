@@ -7,6 +7,7 @@ import {
   Route,
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
+import Navbar from './layout/Nav';
 import LoginPage from './pages/Login-SingIn/LoginPage';
 import SignupPage from './pages/Login-SingIn/SignupPage';
 import HomePage from './pages/Home/HomePage';
@@ -17,6 +18,9 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
+        <header>
+          <Navbar />
+        </header>
       <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
