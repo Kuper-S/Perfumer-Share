@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const mongoose = require('mongoose');
 const URI = process.env.MONGODB_URI;
+const PORT = process.env.PORT
 
 // Enable CORS
 app.use(cors());
@@ -34,7 +35,7 @@ app.use('/api/auth', authRoutes);
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Connected to MongoDB database');
-    const PORT = 3030;
+    
     app.listen(PORT, () => {
       console.log(`App is listening on port ${PORT}! , http://localhost:${PORT}`);
     });
