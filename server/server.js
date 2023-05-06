@@ -23,6 +23,7 @@ app.use(bodyParser.json());
 
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client/build')));
 
 // Set up the user routes
 app.use('/api/users', userRoutes);

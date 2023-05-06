@@ -1,0 +1,4 @@
+[build]
+  base = "/"
+  publish = "client/build"
+  command = "cd server && npm run build"

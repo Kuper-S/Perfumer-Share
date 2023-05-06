@@ -5,7 +5,6 @@ import {
   BrowserRouter,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import LoginPage from './pages/Login-SingIn/LoginPage';
@@ -18,7 +17,7 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<HomePage />} />
+      <Route path="/" element={<HomePage isAuthenticated={isAuthenticated} />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       
