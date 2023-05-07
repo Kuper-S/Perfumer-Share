@@ -1,6 +1,3 @@
 [build]
-  base = "/" 
-  
-command = "cd client && npm install && npm run build && cd ../server && npm install && npm run build && nodemon server.js" 
-publish = "client/build"
- 
+  command = "cd client && npm install && npm run build && cd ../server && npm install && nodemon server.js"
+  publish = "client/build"
