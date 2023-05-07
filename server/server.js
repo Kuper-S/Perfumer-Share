@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
 const dotenv = require('dotenv');
@@ -18,7 +19,15 @@ const PORT = process.env.PORT
 
 // Enable CORS
 app.use(cors());
-
+app.use(cookieParser());
+app.get('/set-cookie', (req, res) => {
+  res.cookie('myCookie', 'cookieValue', { 
+    sameSite: 'none', 
+    secure: true,
+    httpOnly: true // recommended for security reasons
+  });
+  res.send('Cookie set!');
+});
 // Parse JSON request bodies
 app.use(bodyParser.json());
 
