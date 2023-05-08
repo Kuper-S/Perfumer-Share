@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const User = require('../db/models/UserModel');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { createUser,
     getUser,
     updateUser,
     deleteUser } = require('../controllers/UserController');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate,isAdmin } = require('../middlewares/auth');
 const dotenv = require('dotenv');
 dotenv.config({
   path: path.resolve(__dirname, '../../.env')
@@ -18,6 +19,17 @@ const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Server error' });
 };
+
+router.get('/', authenticate, isAdmin, async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 
 // User Registration Route
 router.post(
@@ -42,7 +54,7 @@ router.post(
         const user = await createUser(email, password, firstName, lastName, gender);
         
         // Create a JWT token for the user
-        const token = jwt.sign({ user: { id: user.id } }, jwt_secret, { expiresIn: '1h' });
+        const token = jwt.sign({ user: { id: user.id } }, jwt_secret, { expiresIn: '5h' });
   
         // Return a success message and token to the client
         res.json({ msg: 'User registered successfully', token });
@@ -115,6 +127,24 @@ router.delete('/profile', authenticate, async (req, res, next) => {
     next(err);
   }
 });
+
+router.put('/grant-admin/:userId', authenticate, isAdmin, async (req, res, next) => {
+  try {
+    const user = await getUser(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isAdmin = true;
+    await user.save();
+
+    res.json({ message: 'Admin privileges granted successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 
 // Attach error handling middleware to the router
