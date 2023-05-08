@@ -94,16 +94,28 @@ router.put('/profile', authenticate,
 
 // User Profile Delete Route
 router.delete('/profile', authenticate, async (req, res, next) => {
-    try {
-      // Delete the user's profile from the database
-      await deleteUser(req.user.id);
-        
-      res.json({ msg: 'User deleted successfully' });
-      console.log(`User Deleted : ${user}`);
-    } catch (err) {
-      next(err);
+  try {
+    const user = await getUser(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
+
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'You do not have permission to delete this user' });
+    }
+
+    // Delete the user's profile from the database
+    await deleteUser(req.user.id);
+
+    res.json({ msg: 'User deleted successfully' });
+    console.log(`User Deleted : ${user}`);
+  } catch (err) {
+    next(err);
+  }
 });
+
 
 // Attach error handling middleware to the router
 router.use(errorHandler);

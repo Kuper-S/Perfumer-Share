@@ -13,6 +13,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
   firstName: {
     type: String,
     required: true,

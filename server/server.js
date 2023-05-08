@@ -17,6 +17,17 @@ const mongoose = require('mongoose');
 const URI = process.env.MONGODB_URI;
 const PORT = process.env.PORT
 
+// Define admin middleware
+const isAdmin = (req, res, next) => {
+  if (req.user && req.user.isAdmin) {
+    // If the user is admin, call the next middleware
+    next();
+  } else {
+    // If the user is not admin, send a 403 forbidden error
+    res.status(403).json({ message: 'Admin access required' });
+  }
+};
+
 // Enable CORS
 app.use(cors());
 app.use(cookieParser());
@@ -39,6 +50,13 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use('/api/users', userRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
+
+// Admin routes
+app.get('/api/admin-only', isAdmin, (req, res) => {
+  res.json({ message: 'This is an admin-only route' });
+});
+
+
 
 // Connect to the MongoDB database
 mongoose.connect(URI, { useNewUrlParser: true, useUnifiedTopology: true })

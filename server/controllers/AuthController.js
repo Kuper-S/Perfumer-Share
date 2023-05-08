@@ -105,4 +105,6 @@ async function handleLogout(req, res, next) {
   }
 }
 
+
+
 module.exports = { handleRegister, handleLogin, handleLogout, registerValidation };

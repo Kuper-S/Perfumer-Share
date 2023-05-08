@@ -27,6 +27,11 @@ async function authenticate(req, res, next) {
       return res.status(401).json({ msg: 'Invalid token' });
     }
 
+    // Check if user is admin
+    if (!user.isAdmin) {
+      return res.status(401).json({ msg: 'Admin access required' });
+    }
+
     req.user = user;
     next();
   } catch (err) {
@@ -35,6 +40,15 @@ async function authenticate(req, res, next) {
   }
 }
 
+// Verify if the user is an admin
+function isAdmin(req, res, next) {
+  if (req.user && req.user.isAdmin) {
+    return next();
+  } else {
+    return res.status(401).json({ msg: 'Unauthorized user' });
+  }
+}
+
 module.exports = {
-  authenticate,
+  authenticate,isAdmin
 };
