@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const User = require('../db/models/UserModel')
 const { handleRegister } = require('../controllers/AuthController');
 const { body, validationResult } = require('express-validator');
 const { getUserByEmail } = require('../controllers/UserController');
@@ -46,8 +47,19 @@ router.post('/login',
     }
   });
 
-router.post('/logout', authenticate, async (req, res, next) => {
+  router.post('/logout', async (req, res, next) => {
   try {
+    console.log(req.headers);
+    // Get the JWT token from the request header
+    const token = req.headers.authorization.split(' ')[1];
+    
+    // Decode the JWT token to get the user ID
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.user.id;
+    
+    // Remove the user's refresh token from the database
+    await User.findByIdAndUpdate(userId, { refreshToken: null });
+
     // Invalidate the JWT token
     res.clearCookie('token');
     res.json({ msg: 'Logged out successfully' });
@@ -55,6 +67,7 @@ router.post('/logout', authenticate, async (req, res, next) => {
     next(err);
   }
 });
+
 
 router.post('/register', 
   // Validate the request body
