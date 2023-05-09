@@ -12,14 +12,6 @@ export const api = {
         throw new Error(error.response.data.message);
       }
     },
-    login: async (credentials) => {
-      try {
-        const response = await axios.post(`${API_BASE_URL}/auth/login`, credentials);
-        return response.data;
-      } catch (error) {
-        throw new Error(error.response.data.message);
-      }
-    },
     getCurrentUserProfile: async () => {
       try {
         const response = await axios.get(`${API_BASE_URL}/users/profile`);
@@ -41,8 +33,16 @@ export const api = {
     logout: async () => {
       try {
         await axios.post(`${API_BASE_URL}/auth/logout`);
-      } catch (error) {
-        console.error(error);
+     // Clear the JWT token from the client-side storage
+     localStorage.removeItem('token');
+     // Remove the "Authorization" header from future requests
+     delete axios.defaults.headers.common['Authorization'];
+     // Delete the "myCookie" cookie
+     document.cookie = "myCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+     // Redirect the user to the login page
+     window.location.href = '/login';
+      } catch (err) {
+        console.error(err);
       }
     },
     register: async (formData) => {

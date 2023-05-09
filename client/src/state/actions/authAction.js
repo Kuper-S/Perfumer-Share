@@ -9,10 +9,10 @@ import {
   updateGender
 } from '../reducers/authReducer';
 
-export const login = (email, password) => async (dispatch) => {
+export const login = (userData) => async (dispatch) => {
   try {
     dispatch(loginStart());
-    const { data } = await api.auth.login(email, password);
+    const { data } = await api.auth.login(userData);
     dispatch(loginSuccess(data));
   } catch (error) {
     const message = error.response && error.response.data.message
@@ -21,6 +21,7 @@ export const login = (email, password) => async (dispatch) => {
     dispatch(loginFailure(message));
   }
 };
+
 
 export const logoutUser = () => async (dispatch) => {
   try {

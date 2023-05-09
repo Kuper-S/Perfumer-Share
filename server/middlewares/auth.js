@@ -10,7 +10,8 @@ const jwt_secret = process.env.JWT_SECRET;
 // Verify a JWT token and attach the user object to the request object
 async function authenticate(req, res, next) {
   // Get the token from the request header
-  const token = req.header('Authorization');
+  const authHeader = req.header('Authorization');
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ msg: 'No token, authorization denied' });
@@ -19,17 +20,13 @@ async function authenticate(req, res, next) {
   try {
     // Verify the token and extract the user ID
     const decoded = jwt.verify(token, jwt_secret);
-    const userId = decoded.user.id;
-
+    const userId = decoded.userId;
+    console.log('decoded:', decoded);
     // Find the user in the database and attach it to the request object
     const user = await User.findById(userId);
+    console.log('user', user,userId);
     if (!user) {
       return res.status(401).json({ msg: 'Invalid token' });
-    }
-
-    // Check if user is admin
-    if (!user.isAdmin) {
-      return res.status(401).json({ msg: 'Admin access required' });
     }
 
     req.user = user;
@@ -39,6 +36,9 @@ async function authenticate(req, res, next) {
     res.status(401).json({ msg: 'Invalid token' });
   }
 }
+
+
+
 
 // Verify if the user is an admin
 function isAdmin(req, res, next) {

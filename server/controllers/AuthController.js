@@ -88,22 +88,39 @@ async function handleLogin(req, res, next) {
     // Create JWT token
     const token = jwt.sign({ userId: user._id }, secret);
 
-    // Return token to client
-    res.json({ token });
+    // Return token and user details to client
+    res.json({ 
+      token,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName
+    });
   } catch (error) {
     next(error);
   }
 }
 
+
 // Handler for logging out a user
 async function handleLogout(req, res, next) {
   try {
-    // No action needed, client will discard JWT token
-    res.status(200).send();
-  } catch (error) {
-    next(error);
+    if (!req.user) {
+      return res.status(401).json({ msg: 'Unauthorized user' });
+    }
+    // Remove the user's refresh token from the database
+    await User.findByIdAndUpdate(req.user.userId, { refreshToken: null });
+
+    // Invalidate the JWT token
+
+    console.log(req.user);
+    res.clearCookie('token');
+    res.json({ msg: 'Logged out successfully' });
+  } catch (err) {
+    next(err);
   }
 }
+
+
 
 
 
