@@ -18,26 +18,6 @@ router.post('/login',
 );
 
 
-//   router.post('/logout', async (req, res, next) => {
-//   try {
-//     console.log(req.headers);
-//     // Get the JWT token from the request header
-//     const token = req.headers.authorization.split(' ')[1];
-    
-//     // Decode the JWT token to get the user ID
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     const userId = decoded.user.id;
-    
-//     // Remove the user's refresh token from the database
-//     await User.findByIdAndUpdate(userId, { refreshToken: null });
-
-//     // Invalidate the JWT token
-//     res.clearCookie('token');
-//     res.json({ msg: 'Logged out successfully' });
-//   } catch (err) {
-//     next(err);
-//   }
-// });
 router.post('/logout', authenticate, handleLogout);
 
 router.post('/register', 

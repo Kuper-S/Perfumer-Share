@@ -3,6 +3,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const path = require('path');
+const morgan = require('morgan');
 const dotenv = require('dotenv');
 dotenv.config({
   path: path.resolve(__dirname, '../.env')
@@ -30,6 +31,7 @@ const isAdmin = (req, res, next) => {
 
 // Enable CORS
 app.use(cors());
+
 app.use(cookieParser());
 app.get('/set-cookie', (req, res) => {
   res.cookie('myCookie', 'cookieValue', { 
@@ -41,7 +43,9 @@ app.get('/set-cookie', (req, res) => {
 });
 // Parse JSON request bodies
 app.use(bodyParser.json());
-
+// Add morgan logs
+// app.use(morgan('tiny'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'client/build')));

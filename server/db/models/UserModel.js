@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
   },
   avatar: {
     type: String,
-    required: true,
     default: 'https://www.flaticon.com/free-icon/user_727399',
     trim: true,
   },

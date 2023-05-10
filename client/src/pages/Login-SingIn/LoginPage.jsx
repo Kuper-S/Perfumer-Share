@@ -14,6 +14,7 @@ import {
 }
 from 'mdb-react-ui-kit';
 import {login} from '../../state/actions/authAction';
+import loginFailure from '../../state/reducers/authReducer';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -25,15 +26,15 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await api.auth.login(email, password);
-      dispatch(login(response.user));
+      dispatch(login(response));
       localStorage.setItem('token', response.token);
-      console.log(response.user);
+      console.log(response);
       navigate('/'); // Redirect the user to the home page on successful login
     } catch (error) {
-      console.error(error);
+      dispatch(loginFailure(error.message)); // Dispatch a failure action with the error message
     }
   };
-
+  
   return (
     <MDBContainer className="p-3 my-5 d-flex flex-column w-50">
 

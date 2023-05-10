@@ -66,6 +66,7 @@ function SingupPage() {
         password: '',
         gender: '',
       });
+      console.log(formData);
       window.location.href = '/'; // navigate to home page
     } catch (error) {
       console.error(error);
