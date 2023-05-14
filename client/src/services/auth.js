@@ -1,12 +1,13 @@
-import jwt from 'jsonwebtoken'; 
+import jwt from 'jsonwebtoken';
 import { api } from './api';
-import { loginStart, loginSuccess, loginFailure } from "../state/reducers/authReducer"
-const generateToken = (userId) => {
+import { loginStart, loginSuccess, loginFailure } from "../state/reducers/authReducer";
+
+export const generateToken = (userId) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '7d' });
   return token;
 };
 
-const verifyToken = (token) => {
+export const verifyToken = (token) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     return decoded.userId;
@@ -15,7 +16,6 @@ const verifyToken = (token) => {
     return null;
   }
 };
-
 
 export const handleLogin = async (e, email, password, dispatch, navigate) => {
   e.preventDefault();
@@ -28,9 +28,4 @@ export const handleLogin = async (e, email, password, dispatch, navigate) => {
   } catch (error) {
     dispatch(loginFailure(error.message));
   }
-};
-
-module.exports = {
-  generateToken,
-  verifyToken,
 };

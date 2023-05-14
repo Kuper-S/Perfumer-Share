@@ -7,6 +7,7 @@ export default function override(config, env) {
          util: false,
          stream: false,
          ...config.resolve.fallback
-     };  
+     };
+     config.ignoreWarnings = [/Failed to parse source map/];  
      return config
  }
