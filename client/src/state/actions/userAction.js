@@ -1,13 +1,26 @@
-import { getUserStart, getUserSuccess, getUserFailure ,
-    updateUserStart, updateUserSuccess, updateUserFailure ,
-    deleteUserSuccess,  deleteUserStart ,deleteUserFailure,
-    createUserStart, createUserSuccess, createUserFailure,
+import { 
+    createUserStart,
+    createUserSuccess,
+    getUserStart,
+    getUserSuccess,
+    getUserFailure,
+    updateUserStart,
+    updateUserSuccess,
+    updateUserFailure,
+    clearUserState,
     loginUserStart,
     loginUserSuccess,
     loginUserFailure,
     logoutUserStart,
     logoutUserSuccess,
     logoutUserFailure,
+    authStart,
+    authFailure,
+    authSuccess,
+    deleteUserStart,
+    deleteUserSuccess,
+    deleteUserFailure,
+    createUserFailure
     } from '../reducers/userReducer';
 
 import { api } from '../../services/api';
@@ -18,6 +31,7 @@ export const getUserAction = () => async (dispatch) => {
   try {
     dispatch(getUserStart());
     const response = await api.user.getCurrentUserProfile();
+    console.log('USER ACTION', response);
     dispatch(getUserSuccess(response));
   } catch (error) {
     dispatch(getUserFailure(error.message));

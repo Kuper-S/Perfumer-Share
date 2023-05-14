@@ -72,8 +72,7 @@ async function handleRegister(req, res, next) {
 async function handleLogin(req, res, next) {
   try {
     const { email, password ,firstName} = req.body;
-    console.log(req.body.email);                                                 
-    console.log(email, password); // Add this line to check the values
+    
     // Check if user with email exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -96,6 +95,8 @@ async function handleLogin(req, res, next) {
       firstName: user.firstName,
       lastName: user.lastName
     });
+    // LOOK THAT WORKING!
+    console.log("User" ,user , "User details:" ,user.email ,user.firstName ,user.lastName);
   } catch (error) {
     next(error);
   }
@@ -114,7 +115,7 @@ async function handleLogout(req, res, next) {
     // Invalidate the JWT token
     res.cookie('token', '', { expires: new Date(0) });
 
-    console.log(req.user);
+    
     res.json({ msg: 'Logged out successfully' });
   } catch (err) {
     next(err);

@@ -1,8 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUserAction } from '../../state/actions/userAction';
 
-function Navbar({ user, onLogout }) {
-  console.log(user);
+function Navbar({ onLogout }) {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  console.log('Navbar user:', user);
+  // dispatch(getUserAction());
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <Link className="navbar-brand" to="/">
@@ -32,13 +38,14 @@ function Navbar({ user, onLogout }) {
             </Link>
           </li>
         </ul>
+
         {user ? (
           <ul className="navbar-nav ml-auto">
             <li className="nav-item">
               <span className="navbar-text">Welcome, {user.firstName}</span>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/" onClick={onLogout}>
+              <a className="nav-link" href="/login" onClick={onLogout}>
                 Logout
               </a>
             </li>

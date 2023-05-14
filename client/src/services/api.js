@@ -25,6 +25,12 @@ export const api = {
     login: async (email, password) => {
       try {
         const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
+        const token = localStorage.getItem('token');
+        console.log('Token', token);
+        if (!token) {
+          console.log('No token found');
+        return;
+        }
         console.log(response.data);
         return response.data;
         
