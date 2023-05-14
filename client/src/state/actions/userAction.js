@@ -22,7 +22,11 @@ import {
     deleteUserFailure,
     createUserFailure
     } from '../reducers/userReducer';
-
+    import {
+      logoutStart,
+      logoutSuccess,
+      logoutFailure,
+    } from '../reducers/authReducer';
 import { api } from '../../services/api';
 
 
@@ -101,10 +105,11 @@ export const registerUser = (formData) => async (dispatch) => {
 // Logout User Action
 export const logoutUserAction = () => async (dispatch) => {
   try {
-    dispatch(logoutUserStart());
-    localStorage.removeItem('token');
-    dispatch(logoutUserSuccess());
-  } catch (err) {
-    dispatch(logoutUserFailure(err.message));
+    dispatch(logoutStart());
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    await api.auth.logout();
+    dispatch(logoutSuccess());
+  } catch (error) {
+    dispatch(logoutFailure(error.message));
   }
 };

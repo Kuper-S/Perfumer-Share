@@ -1,6 +1,6 @@
 import React , {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../state/actions/authAction';
+import { registerUser } from '../../state/actions/userAction';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";

@@ -68,11 +68,10 @@ async function handleRegister(req, res, next) {
   }
 }
 
-// Handler for logging in a user
 async function handleLogin(req, res, next) {
   try {
-    const { email, password ,firstName} = req.body;
-    
+    const { email, password } = req.body;
+    console.log(req.body);
     // Check if user with email exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -89,14 +88,11 @@ async function handleLogin(req, res, next) {
     const token = jwt.sign({ userId: user._id }, secret);
 
     // Return token and user details to client
-    res.json({ 
+    res.json({
       token,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
+      email,
     });
-    // LOOK THAT WORKING!
-    console.log("User" ,user , "User details:" ,user.email ,user.firstName ,user.lastName);
+    console.log('User:', user.email);
   } catch (error) {
     next(error);
   }

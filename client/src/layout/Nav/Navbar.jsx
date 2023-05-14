@@ -1,13 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getUserAction } from '../../state/actions/userAction';
+
 
 function Navbar({ onLogout }) {
-  const dispatch = useDispatch();
+  
   const user = useSelector((state) => state.user);
-  console.log('Navbar user:', user);
-  // dispatch(getUserAction());
+  const location = useLocation(); // Get the current location object
+  
+ 
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -24,6 +25,7 @@ function Navbar({ onLogout }) {
         aria-label="Toggle navigation"
       >
         <span className="navbar-toggler-icon"></span>
+        <span className="navbar-text">{location.pathname}</span>
       </button>
       <div className="collapse navbar-collapse" id="navbarNav">
         <ul className="navbar-nav mr-auto">

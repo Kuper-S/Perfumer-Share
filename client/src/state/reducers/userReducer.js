@@ -24,13 +24,11 @@ const userSlice = createSlice({
     },
     createUserSuccess(state, action) {
       const { user, token } = action.payload;
-      return {
-        ...state,
-        token,
-        isAuthenticated: true,
-        loading: false,
-        user,
-      };
+      state.token = token;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.user = user;
+      state.error = null;
     },
     getUserFailure(state, action) {
       state.loading = false;
@@ -51,10 +49,12 @@ const userSlice = createSlice({
     createUserStart(state, action) {
       
     },
-    createUserSuccess(){},
      deleteUserStart(){},
      deleteUserSuccess(){},
-     deleteUserFailure(){},
+     deleteUserFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
      createUserFailure(){},
 
     clearUserState(state) {
@@ -66,7 +66,6 @@ const userSlice = createSlice({
         state.loading = true;
       },
       loginUserSuccess(state, action) {
-        console.log("User data:", action.payload);
         state.user = action.payload;
         state.isAuthenticated = true;
         state.loading = false;
@@ -132,3 +131,4 @@ export const {
   } = userSlice.actions;
 
 export default userSlice.reducer;
+

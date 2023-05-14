@@ -29,11 +29,10 @@ export const api = {
         console.log('Token', token);
         if (!token) {
           console.log('No token found');
-        return;
+          return;
         }
-        console.log(response.data);
+        console.log(response.data); // Add this line to log the response data
         return response.data;
-        
       } catch (error) {
         throw new Error(error.response.data.message);
       }

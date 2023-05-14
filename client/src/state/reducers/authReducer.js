@@ -19,13 +19,11 @@ const authSlice = createSlice({
     },
     loginSuccess(state, action) {
       const { user, token } = action.payload;
-      return {
-        ...state,
-        token,
-        isAuthenticated: true,
-        loading: false,
-        user,
-      };
+      state.token = token;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.user = user;
+    
     },
     loginFailure(state, action) {
       state.loading = false;

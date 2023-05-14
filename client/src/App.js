@@ -15,12 +15,10 @@ import HomePage from './pages/Home/HomePage';
 
 function App() {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const reduxState = useSelector(state => state);
   console.log(reduxState);
-  console.log('USer' , user);
-  // console.log('User: ' + reduxState.user);
   const handleLogout = () => {
     dispatch(logoutUser());
   }
