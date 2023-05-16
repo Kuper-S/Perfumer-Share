@@ -53,10 +53,7 @@ async function createPost(req, res) {
       postedBy: req.user.id,
     });
 
-    // Check if user is admin
-    if (!req.user.isAdmin) {
-      return res.status(401).json({ msg: 'Unauthorized user' });
-    }
+    
 
     await post.save();
     console.log(`Post created by ${req.user.firstName}: ${post}`);

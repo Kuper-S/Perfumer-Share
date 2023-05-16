@@ -1,7 +1,7 @@
 import React ,{useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import {getUserAction} from "../../state/actions/userAction"
-
+import Feed from "../../layout/Feed/Feed";
 function HomePage() {
  
   
@@ -16,6 +16,7 @@ function HomePage() {
   return (
     <div>
       HOMEPAGE
+      <Feed/>
     </div>
   );
 }
