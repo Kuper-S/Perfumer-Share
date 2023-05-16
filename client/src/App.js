@@ -17,8 +17,7 @@ function App() {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
-  const reduxState = useSelector(state => state);
-  console.log(reduxState);
+
   const handleLogout = () => {
     dispatch(logoutUser());
   }

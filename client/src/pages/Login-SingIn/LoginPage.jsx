@@ -40,7 +40,7 @@ function LoginPage() {
       const response = await api.auth.login(email, password);
       
       console.log('Response:', response); // Debugging statement
-      console.log('ResponseData:', response.data); // Logging the response data
+      
       
       dispatch(loginSuccess(response));
       localStorage.setItem('token', response.token);

@@ -20,12 +20,17 @@ async function createUser(email, password, firstName, lastName, gender) {
 
 // Retrieve an existing user from the database
 async function getUser(id) {
-  const user = await User.findById(id);
-  if (!user) {
-    throw new Error('User not found');
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    // console.log('User From userController:' , user);
+    return user;
+  } catch (error) {
+    // Handle any errors that occur during user retrieval
+    throw error;
   }
-
-  return user;
 }
 
 // Update an existing user in the database

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: {},
+  user: [{}],
   loading: false,
   error: null,
   gender: null
@@ -12,13 +12,14 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUserStart(state) {
+      state.user = state.payload;
       state.loading = true;
     },
     setGender(state, action) {
         state.gender = action.payload;
     },
     getUserSuccess(state, action) {
-      state.user = action.payload;
+      state.user = action.payload; 
       state.loading = false;
       state.error = null;
     },

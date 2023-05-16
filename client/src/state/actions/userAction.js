@@ -30,18 +30,44 @@ import {
 import { api } from '../../services/api';
 
 
+// Fetch users function
+export const fetchUsers = () => async () =>{
+  try {
+    const users = await api.user.getCurrentUserProfile();
+    console.log('Users:', users.firstName);
+    // Process the users data as needed
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
+
+
 // Get User Action
 export const getUserAction = () => async (dispatch) => {
   try {
     dispatch(getUserStart());
     const response = await api.user.getCurrentUserProfile();
-    console.log('USER ACTION', response);
-    dispatch(getUserSuccess(response));
+    const { firstName, lastName, email, avatar } = response.data; // Access the nested 'data' property
+    const user = { firstName, lastName, email, avatar };
+    dispatch(getUserSuccess(user));
+    console.log(user);
   } catch (error) {
     dispatch(getUserFailure(error.message));
   }
 };
-
+// Login User Action
+export const loginUserAction = (email, password) => async (dispatch) => {
+  try {
+    dispatch(loginUserStart());
+    const response = await api.user.loginUser(email, password);
+    console.log('Response:', response); // Logging the response
+    console.log('User:', response.data.user); // Logging the user data
+    dispatch(loginUserSuccess(response.data.user));
+  } catch (error) {
+    dispatch(loginUserFailure(error.message));
+  }
+};
 
 
 

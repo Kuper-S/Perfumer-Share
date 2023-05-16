@@ -1,49 +1,89 @@
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:3030/api';
+// Function to get the token from local storage
+const getToken = () => {
+  const token = localStorage.getItem('token');
+  return token ? `Bearer ${token}` : '';
+};
+
+// Create an instance of axios
+const axiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+});
+
+// Add an interceptor to update the Authorization header before each request
+axiosInstance.interceptors.request.use(
+  (config) => {
+    config.headers.Authorization = getToken();
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const api = {
   user: {
     register: async (userData) => {
       try {
-        const response = await axios.post(`${API_BASE_URL}/users/register`, userData);
-        return response.data;
+        const response = await axiosInstance.post('/users/register', userData);
+        return response;
       } catch (error) {
-        throw new Error(error.response.data.message);
+        throw new Error(error.response.message);
       }
     },
     getCurrentUserProfile: async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/users/profile`);
-        return response.data;
+        const response = await axiosInstance.get('/users/profile');
+        console.log(response.data);
+        return response;
       } catch (error) {
-        throw new Error(error.response.data.message);
+        throw new Error(error.response.message);
       }
-    }
+    },
+    getUsers: async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+        const response = await axios.get(`${API_BASE_URL}/users`, { headers });
+        console.log(response,headers);
+        return response;
+      } catch (error) {
+        throw new Error(error.response.message);
+      }
+    },
   },
   auth: {
     login: async (email, password) => {
       try {
-        const response = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
-        const token = localStorage.getItem('token');
+        const response = await axiosInstance.post(`${API_BASE_URL}/auth/login`, { email, password });
+        const { token } = response.data;
+  
         console.log('Token', token);
+  
         if (!token) {
           console.log('No token found');
           return;
         }
-        console.log(response.data); // Add this line to log the response data
-        return response.data;
+  
+        const responseData = { token }; // Create a new object with only the necessary data
+  
+        console.log('Response:', response);
+        console.log('ResponseData:', responseData);
+  
+        return responseData;
       } catch (error) {
-        throw new Error(error.response.data.message);
+        throw new Error(error.response.message);
       }
     },
     logout: async () => {
       try {
-        await axios.post(`${API_BASE_URL}/auth/logout`);
+        await axiosInstance.post(`${API_BASE_URL}/auth/logout`);
      // Clear the JWT token from the client-side storage
      localStorage.removeItem('token');
      // Remove the "Authorization" header from future requests
-     delete axios.defaults.headers.common['Authorization'];
+     delete axiosInstance.defaults.headers.common['Authorization'];
      // Delete the "myCookie" cookie
      document.cookie = "myCookie=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
      // Redirect the user to the login page
@@ -54,58 +94,58 @@ export const api = {
     },
     register: async (formData) => {
       try {
-        const { data } = await axios.post(`${API_BASE_URL}/auth/register`, formData);
+        const { data } = await axiosInstance.post(`${API_BASE_URL}/auth/register`, formData);
         return data;
       } catch (error) {
-        throw new Error(error.response.data.message);
+        throw new Error(error.response.message);
       }
     }
   },
   post: {
     getPosts: (userId) =>
-      axios.get(`${API_BASE_URL}/posts`, {
+    axiosInstance.get(`${API_BASE_URL}/posts`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     createPost: (postData) =>
-      axios.post(`${API_BASE_URL}/posts`, postData, {
+    axiosInstance.post(`${API_BASE_URL}/posts`, postData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     updatePost: (postData) =>
-      axios.put(`${API_BASE_URL}/posts/${postData._id}`, postData, {
+    axiosInstance.put(`${API_BASE_URL}/posts/${postData._id}`, postData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     deletePost: (postId) =>
-      axios.delete(`${API_BASE_URL}/posts/${postId}`, {
+    axiosInstance.delete(`${API_BASE_URL}/posts/${postId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     likePost: (postId) =>
-      axios.put(`${API_BASE_URL}/posts/${postId}/like`, null, {
+    axiosInstance.put(`${API_BASE_URL}/posts/${postId}/like`, null, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     unlikePost: (postId) =>
-      axios.put(`${API_BASE_URL}/posts/${postId}/unlike`, null, {
+    axiosInstance.put(`${API_BASE_URL}/posts/${postId}/unlike`, null, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     addComment: (postId, commentData) =>
-      axios.post(`${API_BASE_URL}/posts/${postId}/comment`, commentData, {
+    axiosInstance.post(`${API_BASE_URL}/posts/${postId}/comment`, commentData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
     deleteComment: (postId, commentId) =>
-      axios.delete(`${API_BASE_URL}/posts/${postId}/comment/${commentId}`, {
+    axiosInstance.delete(`${API_BASE_URL}/posts/${postId}/comment/${commentId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

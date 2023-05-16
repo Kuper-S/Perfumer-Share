@@ -29,8 +29,6 @@ router.get('/', authenticate, isAdmin, async (req, res, next) => {
   }
 });
 
-
-
 // User Registration Route
 router.post(
     '/register',
@@ -64,18 +62,19 @@ router.post(
     }
   );
   
-
-
 router.get('/profile', authenticate, async (req, res, next) => {
     try {
       // Retrieve the user's profile from the database
       const user = await getUser(req.user.id);
   
-      res.json(user);
+      // Extract the desired fields from the user object
+      const { firstName, lastName, avatar,email } = user;
+  
+      res.json({ firstName, lastName, email , avatar });
     } catch (err) {
       next(err);
     }
-  });
+});
   
 // User Profile Update Route
 router.put('/profile', authenticate, 
