@@ -68,11 +68,10 @@ async function handleRegister(req, res, next) {
   }
 }
 
-// Handler for logging in a user
 async function handleLogin(req, res, next) {
   try {
     const { email, password } = req.body;
-
+    console.log(req.body);
     // Check if user with email exists
     const user = await User.findOne({ email });
     if (!user) {
@@ -88,21 +87,39 @@ async function handleLogin(req, res, next) {
     // Create JWT token
     const token = jwt.sign({ userId: user._id }, secret);
 
-    // Return token to client
-    res.json({ token });
+    // Return token and user details to client
+    res.json({
+      token,
+      email,
+    });
+    console.log('User:', user.email);
   } catch (error) {
     next(error);
   }
 }
 
+
 // Handler for logging out a user
 async function handleLogout(req, res, next) {
   try {
-    // No action needed, client will discard JWT token
-    res.status(200).send();
-  } catch (error) {
-    next(error);
+    if (!req.user) {
+      return res.status(401).json({ msg: 'Unauthorized user' });
+    }
+    // Remove the user's refresh token from the database
+    await User.findByIdAndUpdate(req.user.userId, { refreshToken: null });
+
+    // Invalidate the JWT token
+    res.cookie('token', '', { expires: new Date(0) });
+
+    
+    res.json({ msg: 'Logged out successfully' });
+  } catch (err) {
+    next(err);
   }
 }
+
+
+
+
 
 module.exports = { handleRegister, handleLogin, handleLogout, registerValidation };

@@ -1,6 +1,6 @@
 import React , {useState} from 'react';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../../state/actions/authAction';
+import { registerUser } from '../../state/actions/userAction';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
@@ -18,7 +18,6 @@ from 'mdb-react-ui-kit';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const genderOptions = [
   { value: 'male', label: 'Male' },
   { value: 'female', label: 'Female' },
@@ -27,7 +26,6 @@ const genderOptions = [
 
 function SingupPage() {
   const dispatch = useDispatch();
-
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -35,12 +33,11 @@ function SingupPage() {
     password: '',
     gender: '',
     }
-    
   );
+
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -66,18 +63,15 @@ function SingupPage() {
         password: '',
         gender: '',
       });
+      console.log(formData);
       window.location.href = '/'; // navigate to home page
     } catch (error) {
       console.error(error);
       setFormData({}); // clear form
       toast.error('Registration failed. Please try again.');
     }
-    
-  };
+};
   
-
-
-
   return (
     <MDBContainer fluid className='p-4 background-radial-gradient overflow-hidden'>
     <MDBRow>
@@ -127,13 +121,9 @@ function SingupPage() {
                 </MDBBtn>
               </div>
             </MDBCardBody>
-          
           </MDBCard>
-
         </MDBCol>
-
       </MDBRow>
-
     </MDBContainer>
   );
 }

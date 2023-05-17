@@ -1,16 +1,46 @@
-import { getUserStart, getUserSuccess, getUserFailure ,
-    updateUserStart, updateUserSuccess, updateUserFailure ,
-    deleteUserSuccess,  deleteUserStart ,deleteUserFailure,
-    createUserStart, createUserSuccess, createUserFailure,
+import { 
+    createUserStart,
+    createUserSuccess,
+    getUserStart,
+    getUserSuccess,
+    getUserFailure,
+    updateUserStart,
+    updateUserSuccess,
+    updateUserFailure,
+    clearUserState,
     loginUserStart,
     loginUserSuccess,
     loginUserFailure,
     logoutUserStart,
     logoutUserSuccess,
     logoutUserFailure,
+    authStart,
+    authFailure,
+    authSuccess,
+    deleteUserStart,
+    deleteUserSuccess,
+    deleteUserFailure,
+    createUserFailure
     } from '../reducers/userReducer';
-
+    import {
+      logoutStart,
+      logoutSuccess,
+      logoutFailure,
+    } from '../reducers/authReducer';
 import { api } from '../../services/api';
+
+
+// Fetch users function
+export const fetchUsers = () => async () =>{
+  try {
+    const users = await api.user.getCurrentUserProfile();
+    console.log('Users:', users.firstName);
+    // Process the users data as needed
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
+
 
 
 // Get User Action
@@ -18,12 +48,26 @@ export const getUserAction = () => async (dispatch) => {
   try {
     dispatch(getUserStart());
     const response = await api.user.getCurrentUserProfile();
-    dispatch(getUserSuccess(response));
+    const { firstName, lastName, email, avatar } = response.data; // Access the nested 'data' property
+    const user = { firstName, lastName, email, avatar };
+    dispatch(getUserSuccess(user));
+    console.log(user);
   } catch (error) {
     dispatch(getUserFailure(error.message));
   }
 };
-
+// Login User Action
+export const loginUserAction = (email, password) => async (dispatch) => {
+  try {
+    dispatch(loginUserStart());
+    const response = await api.user.loginUser(email, password);
+    console.log('Response:', response); // Logging the response
+    console.log('User:', response.data.user); // Logging the user data
+    dispatch(loginUserSuccess(response.data.user));
+  } catch (error) {
+    dispatch(loginUserFailure(error.message));
+  }
+};
 
 
 
@@ -87,10 +131,11 @@ export const registerUser = (formData) => async (dispatch) => {
 // Logout User Action
 export const logoutUserAction = () => async (dispatch) => {
   try {
-    dispatch(logoutUserStart());
-    localStorage.removeItem('token');
-    dispatch(logoutUserSuccess());
-  } catch (err) {
-    dispatch(logoutUserFailure(err.message));
+    dispatch(logoutStart());
+    localStorage.removeItem('token'); // Remove the token from localStorage
+    await api.auth.logout();
+    dispatch(logoutSuccess());
+  } catch (error) {
+    dispatch(logoutFailure(error.message));
   }
 };

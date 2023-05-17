@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { getPostsStart,
     getPostsSuccess,
     getPostsFailure,
@@ -40,6 +39,14 @@ export const getPostsAction = () => async (dispatch) => {
 export const createPostAction = (postData) => async (dispatch) => {
   try {
     dispatch(createPostStart());
+    
+    const { title, body } = postData; // Destructure the title and body values from postData
+
+    // Validate if title and body are not empty before making the API call
+    if (!title || !body) {
+      throw new Error('Title and body are required');
+    }
+
     const response = await api.post.createPost(postData);
     dispatch(createPostSuccess(response.data));
   } catch (error) {

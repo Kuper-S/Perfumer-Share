@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
-const { authenticate } = require('../middlewares/auth');
+const { body } = require('express-validator');
+const { authenticate ,isAdmin} = require('../middlewares/auth');
 const { getAllPosts, createPost, getPost, updatePost, deletePost ,likePost,
   deleteComment,
   addComment,} = require('../controllers/PostController');
@@ -20,6 +20,10 @@ router.post('/', authenticate,
   body('perfumeName').trim().notEmpty(),
   createPost
 );
+
+// Create a new post (admin only)
+router.post('/posts', isAdmin, createPost);
+
 
 // Update a specific post by ID
 router.put('/:id', authenticate,

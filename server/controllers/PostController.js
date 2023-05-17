@@ -53,6 +53,8 @@ async function createPost(req, res) {
       postedBy: req.user.id,
     });
 
+    
+
     await post.save();
     console.log(`Post created by ${req.user.firstName}: ${post}`);
     res.json(post);
@@ -72,7 +74,8 @@ async function updatePost(req, res) {
       return res.status(404).json({ msg: 'Post not found' });
     }
 
-    if (post.postedBy.toString() !== req.user.id) {
+    // Check if user is admin or the owner of the post
+    if (post.postedBy.toString() !== req.user.id && !req.user.isAdmin) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
@@ -90,6 +93,7 @@ async function updatePost(req, res) {
   }
 }
 
+
 // Delete a post
 async function deletePost(req, res) {
   try {
@@ -98,11 +102,12 @@ async function deletePost(req, res) {
       return res.status(404).json({ msg: 'Post not found' });
     }
 
-    if (post.postedBy.toString() !== req.user.id) {
+    // Check if user is admin or the owner of the post
+    if (post.postedBy.toString() !== req.user.id && !req.user.isAdmin) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
-    await post.remove();
+    await post.deleteOne();
 
     res.json({ msg: 'Post deleted' });
   } catch (err) {

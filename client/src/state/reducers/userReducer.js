@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  user: null,
+  user: [{}],
   loading: false,
   error: null,
   gender: null
@@ -12,14 +12,23 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     getUserStart(state) {
+      state.user = state.payload;
       state.loading = true;
     },
     setGender(state, action) {
         state.gender = action.payload;
     },
     getUserSuccess(state, action) {
-      state.user = action.payload;
+      state.user = action.payload; 
       state.loading = false;
+      state.error = null;
+    },
+    createUserSuccess(state, action) {
+      const { user, token } = action.payload;
+      state.token = token;
+      state.isAuthenticated = true;
+      state.loading = false;
+      state.user = user;
       state.error = null;
     },
     getUserFailure(state, action) {
@@ -38,6 +47,17 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    createUserStart(state, action) {
+      
+    },
+     deleteUserStart(){},
+     deleteUserSuccess(){},
+     deleteUserFailure(state, action) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+     createUserFailure(){},
+
     clearUserState(state) {
       state.user = null;
       state.loading = false;
@@ -48,6 +68,7 @@ const userSlice = createSlice({
       },
       loginUserSuccess(state, action) {
         state.user = action.payload;
+        state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
       },
@@ -64,6 +85,20 @@ const userSlice = createSlice({
         state.error = null;
       },
       logoutUserFailure(state, action) {
+        state.loading = false;
+        state.error = action.payload;
+      },
+      authStart(state) {
+        state.loading = true;
+        state.error = null;
+      },
+      authSuccess(state) {
+        state.isAuthenticated = true;
+        state.loading = false;
+        state.error = null;
+      },
+      authFailure(state, action) {
+        state.isAuthenticated = false;
         state.loading = false;
         state.error = action.payload;
       },
@@ -85,6 +120,16 @@ export const {
     logoutUserStart,
     logoutUserSuccess,
     logoutUserFailure,
+    authStart,
+    authFailure,
+    authSuccess,
+    deleteUserSuccess,
+    deleteUserFailure,
+    createUserStart,
+    createUserFailure,
+    createUserSuccess,
+    deleteUserStart
   } = userSlice.actions;
 
 export default userSlice.reducer;
+

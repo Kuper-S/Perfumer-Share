@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const User = require('../db/models/UserModel');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
 const { createUser,
     getUser,
     updateUser,
     deleteUser } = require('../controllers/UserController');
-const { authenticate } = require('../middlewares/auth');
+const { authenticate,isAdmin } = require('../middlewares/auth');
 const dotenv = require('dotenv');
 dotenv.config({
   path: path.resolve(__dirname, '../../.env')
@@ -18,6 +19,15 @@ const errorHandler = (err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Server error' });
 };
+
+router.get('/', authenticate, isAdmin, async (req, res, next) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+});
 
 // User Registration Route
 router.post(
@@ -42,7 +52,7 @@ router.post(
         const user = await createUser(email, password, firstName, lastName, gender);
         
         // Create a JWT token for the user
-        const token = jwt.sign({ user: { id: user.id } }, jwt_secret, { expiresIn: '1h' });
+        const token = jwt.sign({ user: { id: user.id } }, jwt_secret, { expiresIn: '5h' });
   
         // Return a success message and token to the client
         res.json({ msg: 'User registered successfully', token });
@@ -52,18 +62,19 @@ router.post(
     }
   );
   
-
-
 router.get('/profile', authenticate, async (req, res, next) => {
     try {
       // Retrieve the user's profile from the database
       const user = await getUser(req.user.id);
   
-      res.json(user);
+      // Extract the desired fields from the user object
+      const { firstName, lastName, avatar,email } = user;
+  
+      res.json({ firstName, lastName, email , avatar });
     } catch (err) {
       next(err);
     }
-  });
+});
   
 // User Profile Update Route
 router.put('/profile', authenticate, 
@@ -94,16 +105,46 @@ router.put('/profile', authenticate,
 
 // User Profile Delete Route
 router.delete('/profile', authenticate, async (req, res, next) => {
-    try {
-      // Delete the user's profile from the database
-      await deleteUser(req.user.id);
-        
-      res.json({ msg: 'User deleted successfully' });
-      console.log(`User Deleted : ${user}`);
-    } catch (err) {
-      next(err);
+  try {
+    const user = await getUser(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
+
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'You do not have permission to delete this user' });
+    }
+
+    // Delete the user's profile from the database
+    await deleteUser(req.user.id);
+
+    res.json({ msg: 'User deleted successfully' });
+    console.log(`User Deleted : ${user}`);
+  } catch (err) {
+    next(err);
+  }
 });
+
+router.put('/grant-admin/:userId', authenticate, isAdmin, async (req, res, next) => {
+  try {
+    const user = await getUser(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isAdmin = true;
+    await user.save();
+
+    res.json({ message: 'Admin privileges granted successfully' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
 
 // Attach error handling middleware to the router
 router.use(errorHandler);
