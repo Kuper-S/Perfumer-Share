@@ -50,7 +50,8 @@ const postSlice = createSlice({
       state.loading = true;
     },
     deletePostSuccess(state, action) {
-      state.posts = state.posts.filter(post => post._id !== action.payload);
+      const postId = action.payload;
+      state.posts = state.posts.filter((post) => post._id !== postId);
       state.loading = false;
       state.error = null;
     },

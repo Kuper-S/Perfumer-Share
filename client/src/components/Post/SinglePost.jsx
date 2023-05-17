@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { deletePostAction } from '../../state/actions/postAction';
+import { deletePostAction, updatePostAction } from '../../state/actions/postAction';
 
 const SinglePost = ({ post }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  const handleDelete = () => {
-    dispatch(deletePostAction(post._id));
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      dispatch(deletePostAction(post._id));
+    } catch (error) {
+      // Handle error, show error message, etc.
+      console.error(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleEditPost = () => {
+    setIsEditing(true);
+    dispatch(updatePostAction(post._id));
   };
 
   return (
@@ -22,8 +37,16 @@ const SinglePost = ({ post }) => {
       {user && user.id === post.postedBy.id && (
         <div className="card-footer">
           <div className="btn-group">
-            <button className="btn btn-primary mr-2">Edit</button>
-            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+            <button className="btn btn-primary mr-2" onClick={handleEditPost} disabled={isEditing}>
+              {isEditing ? 'Editing...' : 'Edit'}
+            </button>
+            <button className="btn btn-danger" onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? (
+                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              ) : (
+                'Delete'
+              )}
+            </button>
           </div>
         </div>
       )}
