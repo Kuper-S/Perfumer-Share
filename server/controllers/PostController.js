@@ -107,7 +107,7 @@ async function deletePost(req, res) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
-    await post.remove();
+    await post.deleteOne();
 
     res.json({ msg: 'Post deleted' });
   } catch (err) {
