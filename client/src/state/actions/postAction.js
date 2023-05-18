@@ -55,10 +55,16 @@ export const createPostAction = (postData) => async (dispatch) => {
 };
 
 // Update Post Action
-export const updatePostAction = (postData) => async (dispatch) => {
+
+export const updatePostAction = (postId, postData) => async (dispatch) => {
   try {
     dispatch(updatePostStart());
-    const response = await api.post.updatePost(postData);
+    const updatedData = {
+      title: postData.title,
+      body: postData.body,
+      perfumeName: postData.perfumeName
+    };
+    const response = await api.post.updatePost(postId, updatedData);
     dispatch(updatePostSuccess(response.data));
   } catch (error) {
     dispatch(updatePostFailure(error.message));

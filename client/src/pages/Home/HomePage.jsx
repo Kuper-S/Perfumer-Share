@@ -3,8 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import {getUserAction} from "../../state/actions/userAction"
 import Feed from "../../layout/Feed/Feed";
 function HomePage() {
- 
-  
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuthStatusAction());
+  }, []);
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
   
@@ -15,7 +18,6 @@ function HomePage() {
 
   return (
     <div>
-      HOMEPAGE
       <Feed/>
     </div>
   );

@@ -6,7 +6,8 @@ import {getUserAction} from "../../state/actions/userAction"
 function Navbar({ onLogout }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
-  
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
 
   useEffect(() => {
     dispatch(getUserAction(user)); // Call the getUserAction function

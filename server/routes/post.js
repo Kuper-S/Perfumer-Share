@@ -25,13 +25,7 @@ router.post('/', authenticate,
 router.post('/posts', isAdmin, createPost);
 
 
-// Update a specific post by ID
-router.put('/:id', authenticate,
-  body('title').trim().notEmpty(),
-  body('body').trim().notEmpty(),
-  body('perfumeName').trim().notEmpty(),
-  updatePost
-);
+router.put('/:id', authenticate, updatePost);
 
 // Delete a specific post by ID
 router.delete('/:id', authenticate, deletePost);

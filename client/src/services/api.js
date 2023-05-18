@@ -114,8 +114,8 @@ export const api = {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       }),
-    updatePost: (postData) =>
-    axiosInstance.put(`${API_BASE_URL}/posts/${postData._id}`, postData, {
+      updatePost: (postId, postData) =>
+      axiosInstance.put(`${API_BASE_URL}/posts/${postId}`, postData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },

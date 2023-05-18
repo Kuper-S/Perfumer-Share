@@ -1,4 +1,6 @@
 import { api } from '../../services/api';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+
 import {
   loginStart,
   loginSuccess,
@@ -6,12 +8,11 @@ import {
   logoutStart,
   logoutSuccess,
   logoutFailure,
-  updateGender
+  updateGender,
+  setAuthenticatedUser
 } from '../reducers/authReducer';
 import {
-  getUserStart,
   getUserSuccess,
-  getUserFailure,
 } from '../reducers/userReducer';
 
 export const login = (userData) => async (dispatch) => {
@@ -65,3 +66,14 @@ export const setGender = (gender) => async (dispatch) => {
     console.error(error);
   }
 };
+export const checkAuthStatusAction = createAsyncThunk(
+  'auth/checkAuthStatus',
+  async () => {
+    try {
+      const response = await api.auth.checkStatus();
+      return response.data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+);

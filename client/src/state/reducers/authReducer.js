@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit';
-
+import { createSlice, } from '@reduxjs/toolkit';
+import {checkAuthStatusAction} from "../actions/authAction"
 const initialState = {
   isAuthenticated: false,
   token: localStorage.getItem('token') || '', // Set initial value to an empty string
@@ -49,6 +49,23 @@ const authSlice = createSlice({
       state.isAuthenticated = true;
       state.user = action.payload;
     },
+    
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkAuthStatusAction.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(checkAuthStatusAction.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.user = action.payload;
+      })
+      .addCase(checkAuthStatusAction.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 

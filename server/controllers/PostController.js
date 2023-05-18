@@ -68,22 +68,21 @@ async function createPost(req, res) {
 async function updatePost(req, res) {
   try {
     const { title, body, image, perfumeName } = req.body;
-
+    
     let post = await Post.findById(req.params.id);
     if (!post) {
       return res.status(404).json({ msg: 'Post not found' });
     }
-
     // Check if user is admin or the owner of the post
     if (post.postedBy.toString() !== req.user.id && !req.user.isAdmin) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
-
     post.title = title;
     post.body = body;
     post.image = image;
     post.perfumeName = perfumeName;
-
+    console.log(`PostID FROM CONTROLLER ${post}`);
+    console.log(`Post Was Updated Successfully`);
     await post.save();
 
     res.json(post);
