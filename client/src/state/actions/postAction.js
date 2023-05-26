@@ -23,6 +23,7 @@ import { getPostsStart,
       deleteCommentSuccess,
       deleteCommentFailure, } from '../reducers/postReducer';
 import { api } from '../../services/api';
+import { toast } from 'react-toastify';
 // Get Posts Action
 
 export const getPostsAction = () => async (dispatch) => {
@@ -79,6 +80,8 @@ export const deletePostAction = (postId) => async (dispatch) => {
     dispatch(deletePostStart());
     const response = await api.post.deletePost(postId);
     dispatch(deletePostSuccess(response.data));
+     // Show success toast
+     toast.success('Post deleted successfully!');
   } catch (error) {
     dispatch(deletePostFailure(error.message));
   }

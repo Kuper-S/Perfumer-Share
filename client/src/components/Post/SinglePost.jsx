@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { deletePostAction, updatePostAction } from '../../state/actions/postAction';
-
-const SinglePost = ({ post }) => {
+import 'react-toastify/dist/ReactToastify.css';
+import {ToastContainer, toast} from "react-toastify";const SinglePost = ({ post }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.user);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -16,12 +16,13 @@ const SinglePost = ({ post }) => {
   const handleDelete = async () => {
     setIsDeleting(true);
     try {
-      dispatch(deletePostAction(post._id));
-    } catch (error) {
-      // Handle error, show error message, etc.
-      console.error(error);
-    } finally {
+      await dispatch(deletePostAction(post._id));
       setIsDeleting(false);
+      
+    } catch (error) {
+      setIsDeleting(false);
+      toast.error('Failed to delete post.');
+      console.error(error);
     }
   };
 
@@ -50,6 +51,7 @@ const SinglePost = ({ post }) => {
 
   return (
     <div className="card mb-3">
+    <ToastContainer position="top-left"/>
       <div className="card-body">
         {isEditing ? (
           <>

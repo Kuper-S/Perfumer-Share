@@ -1,7 +1,7 @@
 import React ,{useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux';
-import {getUserAction} from "../../state/actions/userAction"
 import Feed from "../../layout/Feed/Feed";
+import { checkAuthStatusAction } from '../../state/actions/authAction';
 function HomePage() {
   const dispatch = useDispatch();
 
